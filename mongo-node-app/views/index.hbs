@@ -1,0 +1,43 @@
+<h1>{{ title }}</h1>
+<section>
+	<form action="/dropdown" method="post">
+		<h2>Automatiserad operation</h2>
+		<div class="auto">
+			<label for="antal">Antal</label>
+			<select name="antal">
+				<option value="1">1</option>
+				<option value="5">5</option>
+				<option value="10">10</option>
+				<option value="100">100</option>
+			</select>
+			<label for="operation">Operation</label>
+			<select name="operation">
+				<option value="insert">Insert</option>
+				<option value="update">Update</option>
+				<option value="select">Select</option>
+				<option value="delete">Delete</option>
+			</select>
+			<label for="format">Format</label>
+			<select name="format">
+				<option value="epub">epub</option>
+				<option value="txt">txt</option>
+				<option value="htm">htm</option>
+			</select>
+		</div>
+		<button type="submit">Kör</button>
+	</form>
+</section>
+<section>
+	<h2>Get Data</h2>
+	<div>
+		{{# each items }}
+			<article>
+				<div>ID: {{ this._id}}</div>
+				<div>Name: {{ this.name}}</div>
+				<div>Ålder: {{ this.year}}</div>
+				<div>Kommentar: {{ this.comment}}</div>
+			</article>
+		{{/each}}
+	</div>
+</section>
+

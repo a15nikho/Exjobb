@@ -1,0 +1,25 @@
+<h1> {{ title }} </h1>
+<p>ID passed {{ anyArray }}</p>
+<section>
+	<form action="/update" method="post">
+		<h2>Update Data</h2>
+		<div class="update">
+			<label for="id">ID</label>
+			<input type="text" id="id" name="id">
+		</div>
+		<div class="update">
+			<label for="name">Namn</label>
+			<input type="text" id="name" name="name">
+		</div>
+		<div class="update">
+			<label for="year">Ålder</label>
+			<input type="text" id="year" name="year">
+		</div>
+		<div class="update">
+			<label for="comment">Kommentar</label>
+			<input type="text" id="comment" name="comment">
+		</div>
+		
+		<button type="submit">Submit</button>
+	</form>
+</section>
