@@ -1,0 +1,50 @@
+<h1> {{ title }} </h1>
+<section>
+	<h2>Get Data</h2>
+	<a href="/get-data">Load Data</a>
+	<div>
+		{{# each items }}
+			<article>
+				<div>ID: {{ id}}</div>
+				<div>rev: {{ this.value.rev }}</div>
+				<div>Name: {{ this.value.name}}</div>
+				<div>Ålder: {{ this.value.year}}</div>
+				<div>Kommentar: {{ this.value.comment}}</div>
+				<form method="post" action="/delete/{{id}}">
+					<input type="hidden" value="{{value.rev}}" name="rev">
+					<input type="submit" value="DELETE">
+				</form>
+					<form method="post" action="/update/{{id}}/{{this.value.name}}">
+					<input type="hidden" value="{{ id }}" name="id">
+					<input type="submit" value="UPDATE">
+				</form>
+			</article>
+		{{/each}}
+	</div>
+</section>
+<section>
+	<form action="/update" method="post">
+		<h2>Update Data</h2>
+			<div class="update">
+				<label for="id">ID</label>
+				<input type="text" id="id" name="id">
+			</div>
+			<div class="update">
+				<label for="rev">rev</label>
+				<input type="text" id="rev" name="rev">
+			</div>
+			<div class="update">
+				<label for="name">Namn</label>
+				<input type="text" id="name" name="name">
+			</div>
+			<div class="update">
+				<label for="year">Ålder</label>
+				<input type="text" id="year" name="year">
+			</div>
+			<div class="update">
+				<label for="comment">Kommentar</label>
+				<input type="text" id="comment" name="comment">
+			</div>
+		<button type="submit">Submit</button>
+	</form>
+</section>
