@@ -1,75 +1,29 @@
 var express = require('express');
 var router = express.Router();
 var NodeCouchDb = require('node-couchdb');
+var nano = require('nano')('http://localhost:5984');
 var assert = require('assert');
-var fs = require('fs');
-const couch = new NodeCouchDb();
-var dir = require('node-dir');
+
+//const couch = new NodeCouchDb();
 
 
-const couchAuth = new NodeCouchDb({
+
+/*const couchAuth = new NodeCouchDb({
     auth: {
         user: 'admin',
         pass: 'admin'
     }
-});
+});*/
 
-
-
-
-
-const testFolder = './tests/';
-
-
-
-
-
-const dbname = 'testdb';
-const viewUrl = '_design/all_docs/_view/all';
+const dbname = nano.db.use('testdb');
+const viewUrl = '_all_docs?include_docs=true';
+const bulkUrl = '_bulk_docs';
+//const viewUrl = '_design/all_test/_view/all';
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-
-	var ids = [];    
-	var revs = [];
-	var resultArray = [];
-
-	couch.listDatabases().then(function(dbs){
-		couch.get(dbname, viewUrl).then(
-			function(data, headers,status){
-
-				for (var i in data.data.rows) {
-				  revs.push(data.data.rows[i].value.rev);
-				  ids.push(data.data.rows[i].id);
-				}
-				resultArray.push(data);
-
-				/*fs.readdirSync(testFolder).forEach(file => {
-				  console.log(file);
-				})*/
-
-				dir.readFiles(testFolder,
-				    function(err, content, next) {
-				        if (err) throw err;
-				        console.log('content:', content);  // get content of files
-				        next();
-				    },
-				    function(err, files){
-				        if (err) throw err;
-				        console.log('finished reading files:', files); // get filepath 
-				   }); 
-
-			  	res.render('index', { title: 'CouchDB', condition: true, anyArray: [1,2,3], itemids: ids, itemrevs: revs, items:data.data.rows }); //change title on index.html
-			},
-			function(err){
-				res.send(err);
-			}
-		);
-	});
-
-
-	
-});
+/*router.get('/', function(req, res, next) {
+  res.render('index', { title: 'CouchDB', condition: true, anyArray: [1,2,3] }); //change title on index.html
+}); */
 
 
 router.get('/insert', function(req, res, next) {
@@ -89,20 +43,15 @@ router.get('/get', function(req, res, next) {
 });
 
 
-router.get('/get-data', function(req, res, next){
-	couch.listDatabases().then(function(dbs){
-		couch.get(dbname, viewUrl).then(
-			function(data, headers,status){
-				console.log(data.data.rows);
-				res.render('get',{
-					items:data.data.rows
-
-				});
-			},
-			function(err){
-				res.send(err);
-			}
-		);
+router.get('/', function(req, res, next){
+	dbname.list({include_docs: true}, function(err, body) {
+	  if (!err) {
+	   
+	    //console.log(body.rows);
+     	res.render('index',{
+			 title: 'CouchDB', items: body.rows
+		});
+	  }
 	});
 });
 
@@ -119,7 +68,7 @@ router.post('/insert', function(req, res, next){
 		},
 		function(err){
 			res.send(err);
-		});
+	});
 });
 
 
@@ -141,20 +90,6 @@ router.post('/update', function(req, res, next){
 			res.send(err);
 		});
 
-
-
-	/*MongoClient.connect(url, function(err, client){
-		var db = client.db(dbName);
-		
-		assert.equal(null, err);
-		db.collection('user').updateOne({"_id": objectId(id)}, {$set: item}, function(error, result){
-			assert.equal(null, err);
-			console.log('Item updated');
-			client.close();
-		});
-		res.redirect('/get-data');
-	});*/
-
 });
 
 router.post('/delete/:id', function(req, res, next){
@@ -172,42 +107,84 @@ router.post('/delete/:id', function(req, res, next){
 
 router.post('/dropdown', function(req, res, next){
 	var item = {
-		
+		id: req.id,
 		antal: req.body.antal,
 		operation: req.body.operation,
-		format: req.body.format
-		
+		format: req.body.format,
+		rev: req.body.rev
 	};
-	
 	
 	if(item.operation == "insert"){
 		console.log(item.antal + " insert was chosen");
-		for(var i = 0; i < item.antal; i++){
-			couch.insert('testdb', {name: item.operation, year: item.format, comment: item.antal}).then(
-			function(data, header, status){
-				
-			},
-			function(err){
-				res.send(err);
-			});
+
+		var element = {}, docs = [];
+		for (var i=0; i<item.antal; i++) {
+		    element.name = item.operation;
+			element.year = item.format;
+			docs.push(element);
 		}
+
+		dbname.bulk({docs:docs}, function(err, body) {
+		  
+		});
 		res.redirect('/');
 	}
 	else if(item.operation == "update"){
-		console.log(item.antal + " update was chosen");
-		var id = req.body.id;
-		var rev = req.body.rev;
-		console.log(req.body);
-	 	
+		console.log("update was chosen");
+
 	
-			couch.update(dbname, {_id: id, _rev: rev, name: item.operation, year: item.format, comment: item.antal}).then(
+
+		/*MongoClient.connect(url, function(err, client){
+			var db = client.db(dbName);
+			
+			assert.equal(null, err);
+			if(item.antal == "1"){
+				db.collection('user').updateOne({"year": item.format}, {$set: {"name": "changed"} }, function(error, result){
+					assert.equal(null, err);
+					console.log('Item updated');
+				});
+		 	}
+		 	else{
+		 		db.collection('user').updateMany({"year": item.format}, {$set: {"name": "changed"} }, function(error, result){
+					assert.equal(null, err);
+					console.log('Item updated');
+				});
+		 	}
+			client.close();
+		});*/
+		var docArray = [];
+		dbname.list({include_docs: true}, function(err, body) {
+		  if (!err) {
+		   
+		    //console.log(body.rows);
+		    docArray.push(body.rows);
+	     	
+		  }
+		});
+
+
+		var element = {}, docs = [];
+		for (var i=0; i<item.antal; i++) {
+		    element.name = item.operation;
+			element.year = item.format;
+			docs.push(element);
+		}
+
+		console.log(docArray);
+		/*alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: false }, function(err, body) {
+		  if (!err)
+		    console.log(body)
+		})
+
+		for(var i = 0; i < item.antal; i++){
+			dbname.update(dbname, {comment: item.format, _rev: item.rev, name: item.name, year: item.year, comment: item.comment}).then(
 				function(data, header, status){
 					
 				},
 				function(err){
 					res.send(err);
 			});
-		
+		}*/
 		res.redirect('/');
 	}
 	else if(item.operation == "select"){
@@ -249,8 +226,44 @@ router.post('/dropdown', function(req, res, next){
 		res.redirect('/');
 	}
 	else if(item.operation == "delete"){
-		var id = req.body.id;
-		var rev = req.body.rev;
+		couch.listDatabases().then(function(dbs){
+		couch.get(dbname, viewUrl).then(
+			function(data, headers,status){
+				//console.log(data.data.rows);
+				/*res.render('index',{
+					items:data.data.rows, title: 'CouchDB'
+
+				});*/
+				var obj = data.data.rows;
+				obj.forEach(function(rows){
+				    console.log(rows);
+
+				    Object.keys(rows).forEach(function(key) {
+
+					  console.log(rows[key]);
+
+					});
+				});
+				
+				//console.log(obj.find("rev"));
+				//console.log(data.data.rows);
+				//console.log(JSON.parse(JSON.stringify(data.data.rows)));
+				//console.log(json.getJSONObject("value").getString("rev"));
+				for(var i = 0; i < item.antal; i++){
+					couch.del(dbname, data.data.rows.id, data.data.rows.value.rev).then(
+						function(data, header, status){
+							res.redirect('/');
+						},
+						function(err){
+						res.send(err);
+					});
+				}
+			},
+			function(err){
+				res.send(err);
+			}
+		);
+	});
 
 		/*MongoClient.connect(url, function(err, client){
 			var db = client.db(dbName);
@@ -261,16 +274,16 @@ router.post('/dropdown', function(req, res, next){
 		 	}
 		 	client.close();
 		}); 
-		*/
-		
-			couch.del(dbname, id, rev).then(
+
+		for(var i = 0; i < item.antal; i++){
+			couch.del(dbname, item.id, item.rev).then(
 				function(data, header, status){
-					
+					res.redirect('/');
 				},
 				function(err){
 					res.send(err);
 			});
-	
+		}*/
 		//console.log(req);
 		console.log(item.antal + " delete was chosen");
 		res.redirect('/');
@@ -280,4 +293,6 @@ router.post('/dropdown', function(req, res, next){
 	}
 	
 });
+
+
 module.exports = router;
