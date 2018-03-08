@@ -4,10 +4,10 @@ var MongoClient = require('mongodb').MongoClient;
 var objectId = require('mongodb').ObjectID;
 var Binary = require('mongodb').Binary;
 var assert = require('assert');
-var fs = require('fs'),
-    path = require('path'),    
-    filePath = path.join(__dirname, '/books/56658-8.txt');
+var fs = require('fs');
+var dir = require('node-dir');
 
+const testFolder = './tests/';
 var url = 'mongodb://localhost:27017/test'; //url till databas och sedan definieras vilken databas
 var dbName = 'test';
 /* GET home page. */
@@ -43,6 +43,17 @@ router.get('/', function(req, res, next){
 			assert.equal(null, err);
 			resultArray.push(doc);
 		}, function(){
+
+		dir.readFiles(testFolder,
+		    function(err, content, next) {
+		        if (err) throw err;
+		        console.log('content:', content);  // get content of files
+		        next();
+		    },
+		    function(err, files){
+		        if (err) throw err;
+		        console.log('finished reading files:', files); // get filepath 
+		   }); 
 			client.close();
 			res.render('index', {title: "Home", items: resultArray});
 		});
@@ -202,6 +213,7 @@ router.post('/dropdown', function(req, res, next){
 		MongoClient.connect(url, function(err, client){
 			var db = client.db(dbName);
 			assert.equal(null, err);
+
 			var cursor = db.collection('user').find().limit(parseInt(item.antal));
 
 			cursor.forEach(function(doc, err){
