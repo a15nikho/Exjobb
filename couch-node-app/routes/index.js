@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
 				dir.readFiles(testFolder,
 				    function(err, content, next) {
 				        if (err) throw err;
-				        console.log('content:', content);  // get content of files
+				        //console.log('content:', content);  // get content of files
 				        next();
 				    },
 				    function(err, files){
@@ -178,19 +178,37 @@ router.post('/dropdown', function(req, res, next){
 		format: req.body.format
 		
 	};
-	
+	var bookcontent = [];
 	
 	if(item.operation == "insert"){
 		console.log(item.antal + " insert was chosen");
-		for(var i = 0; i < item.antal; i++){
-			couch.insert('testdb', {name: item.operation, year: item.format, comment: item.antal}).then(
-			function(data, header, status){
-				
-			},
-			function(err){
-				res.send(err);
-			});
-		}
+
+
+		dir.readFiles(testFolder,
+			    function(err, content, next) {
+			        if (err) throw err;
+			       
+			       		/* console.log('content:', content);  // get content of files					
+							console.log(bookcontent);*/
+							bookcontent.push(content);
+				   
+			        next();
+			    },
+			    function(err, files){
+			        if (err) throw err;
+			        console.log('finished reading files:', files); // get filepath 
+				  for(var i = 0; i < item.antal; i++){
+					couch.insert('testdb', {name: item.operation, year: item.format, comment: bookcontent[i]}).then(
+					function(data, header, status){
+						
+					},
+					function(err){
+						res.send(err);
+					});
+				}
+				   
+				});
+		
 		res.redirect('/');
 	}
 	else if(item.operation == "update"){
