@@ -47,7 +47,7 @@ router.get('/', function(req, res, next){
 		dir.readFiles(testFolder,
 		    function(err, content, next) {
 		        if (err) throw err;
-		        console.log('content:', content);  // get content of files
+		        //console.log('content:', content);  // get content of files
 		        next();
 		    },
 		    function(err, files){
@@ -163,6 +163,7 @@ router.post('/dropdown', function(req, res, next){
 		operation: req.body.operation,
 		format: req.body.format
 	};
+	var bookcontent = [];
 	
 	if(item.operation == "insert"){
 		console.log(item.antal + " insert was chosen");
@@ -170,16 +171,37 @@ router.post('/dropdown', function(req, res, next){
 		MongoClient.connect(url, function(err, client) {
 		  // Get the collection
 		  var db = client.db(dbName);
-		  for(var i = 0; i < item.antal; i++){
-		  	db.collection('user').insertOne({name : item.operation, year: item.format}, function(err, r) {
-			    assert.equal(null, err);
-			    // Finish up test
-			   
-			});
-		  }
-		   client.close();
-		});
-		res.redirect('/');
+		    dir.readFiles(testFolder,
+			    function(err, content, next) {
+			        if (err) throw err;
+			       
+			       		/* console.log('content:', content);  // get content of files
+
+			       		 	db.collection('user').insertOne({name : item.operation, year: item.format, comment: content}, function(err, r) {
+							    assert.equal(null, err);
+							    // Finish up test
+							   
+							});
+							
+							console.log(bookcontent);*/
+							bookcontent.push(content);
+				   
+			        next();
+			    },
+			    function(err, files){
+			        if (err) throw err;
+			        console.log('finished reading files:', files); // get filepath 
+				  	for(var i = 0; i < item.antal; i++){
+				  		db.collection('user').insertOne({name : item.operation, year: item.format, comment: bookcontent[i]}, function(err, r) {
+						    assert.equal(null, err);
+					 	   // Finish up test
+					   	
+						});
+				  	}
+				   client.close();
+				});
+		    res.redirect('/');
+  		}); 
 	}
 	else if(item.operation == "update"){
 		console.log("update was chosen");
