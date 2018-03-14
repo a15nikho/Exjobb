@@ -21,7 +21,15 @@
 			<select name="format">
 				<option value="epub">epub</option>
 				<option value="txt">txt</option>
-				<option value="htm">htm</option>
+				<option value="htm">html</option>
+				<option value="mobi">mobi</option>
+			</select>
+			<select  name="id" id="id">
+				{{# each items }}
+					<option value="{{ this._id }}">
+					{{ this._id }}
+					</option>
+				{{/each}}
 			</select>
 		</div>
 		<button type="submit">Kör</button>

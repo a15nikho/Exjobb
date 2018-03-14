@@ -20,9 +20,10 @@
 			</select>
 			<label for="format">Format</label>
 			<select name="format">
-				<option value="epub">epub</option>
-				<option value="txt">txt</option>
 				<option value="htm">htm</option>
+				<option value="txt">txt</option>
+				<option value="epub">epub</option>
+				<option value="mobi">mobi</option>
 			</select>
 			<select  name="id" id="id">
 				{{# each itemids }}
@@ -49,9 +50,6 @@
 			<article>
 				<div>ID: {{ id}}</div>
 				<div>rev: {{ this.value.rev }}</div>
-				<div>Name: {{ this.value.name}}</div>
-				<div>Ålder: {{ this.value.year}}</div>
-				<div>Kommentar: {{ this.value.comment}}</div>
 			</article>
 		{{/each}}
 	</div>

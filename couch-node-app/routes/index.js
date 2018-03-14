@@ -1,173 +1,67 @@
 var express = require('express');
 var router = express.Router();
-var NodeCouchDb = require('node-couchdb');
+var nano = require('nano')('http://localhost:5984');
 var assert = require('assert');
 var fs = require('fs');
-const couch = new NodeCouchDb();
-var dir = require('node-dir');
 
-
-const couchAuth = new NodeCouchDb({
-    auth: {
-        user: 'admin',
-        pass: 'admin'
-    }
-});
-
-
-
-
-
-const testFolder = './tests/';
-
-
-
-
-
+const htmlFolder = './tests/html/';
+const txtFolder = './tests/txt/';
+const epubFolder = './tests/epub/';
+const mobiFolder = './tests/mobi/';
 const dbname = 'testdb';
-const viewUrl = '_design/all_docs/_view/all';
+var testdb = nano.use(dbname);
+var htmlBooks = [];
+var txtBooks = [];
+var epubBooks = [];
+var mobiBooks = [];
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
 
 	var ids = [];    
 	var revs = [];
 	var resultArray = [];
-
-	couch.listDatabases().then(function(dbs){
-		couch.get(dbname, viewUrl).then(
-			function(data, headers,status){
-
-				for (var i in data.data.rows) {
-				  revs.push(data.data.rows[i].value.rev);
-				  ids.push(data.data.rows[i].id);
-				}
-				resultArray.push(data);
-
-				/*fs.readdirSync(testFolder).forEach(file => {
-				  console.log(file);
-				})*/
-
-				dir.readFiles(testFolder,
-				    function(err, content, next) {
-				        if (err) throw err;
-				        //console.log('content:', content);  // get content of files
-				        next();
-				    },
-				    function(err, files){
-				        if (err) throw err;
-				        console.log('finished reading files:', files); // get filepath 
-				   }); 
-
-			  	res.render('index', { title: 'CouchDB', condition: true, anyArray: [1,2,3], itemids: ids, itemrevs: revs, items:data.data.rows }); //change title on index.html
-			},
-			function(err){
-				res.send(err);
-			}
-		);
-	});
-
-
 	
-});
+	fs.readdir(htmlFolder, (err, files) => {
+		files.forEach(file => {
+			//console.log(file + " html");
+			htmlBooks.push(htmlFolder+file);
+		});
+	})
 
+	fs.readdir(txtFolder, (err, files) => {
+		files.forEach(file => {
+			//console.log(file+ " txt");
+			txtBooks.push(txtFolder+file);
+		});
+	})
 
-router.get('/insert', function(req, res, next) {
-  res.render('insert', { title: 'Insert ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
+	fs.readdir(epubFolder, (err, files) => {
+		files.forEach(file => {
+			//console.log(file+ " txt");
+			epubBooks.push(epubFolder+file);
+		});
+	})
 
-router.get('/update', function(req, res, next) {
-  res.render('update', { title: 'Update ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
+	fs.readdir(mobiFolder, (err, files) => {
+		files.forEach(file => {
+			//console.log(file+ " txt");
+			mobiBooks.push(mobiFolder+file);
+		});
+	})
 
-router.get('/delete', function(req, res, next) {
-  res.render('delete', { title: 'Delete ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
-
-router.get('/get', function(req, res, next) {
-  res.render('get', { title: 'Get ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
-
-
-router.get('/get-data', function(req, res, next){
-	couch.listDatabases().then(function(dbs){
-		couch.get(dbname, viewUrl).then(
-			function(data, headers,status){
-				console.log(data.data.rows);
-				res.render('get',{
-					items:data.data.rows
-
-				});
-			},
-			function(err){
-				res.send(err);
+	testdb.list(function(err, body) {
+	  if (!err) {
+	    body.rows.forEach(function(doc) {
+	      
+			for (var i in doc) {
+				revs.push(doc.value.rev);
+				ids.push(doc.id);
 			}
-		);
+	    });
+	  }
+	    	 
+  	res.render('index', { title: 'CouchDB', itemids: ids, itemrevs: revs, items: body.rows });
 	});
-});
-
-router.post('/insert', function(req, res, next){
-	var item = {
-		name: req.body.name,
-		year: req.body.year,
-		comment: req.body.comment
-	};
-
-	couch.insert('testdb', {name: item.name, year: item.year, comment: item.comment}).then(
-		function(data, header, status){
-			res.redirect('/get-data');
-		},
-		function(err){
-			res.send(err);
-		});
-});
-
-
-
-router.post('/update', function(req, res, next){
-	var item = {
-		name: req.body.name,
-		year: req.body.year,
-		rev : req.body.rev,
-		comment: req.body.comment
-	};
-	id = req.body.id;
-	
-	couch.update(dbname, {_id: id, _rev: item.rev, name: item.name, year: item.year, comment: item.comment}).then(
-		function(data, header, status){
-			res.redirect('/get-data');
-		},
-		function(err){
-			res.send(err);
-		});
-
-
-
-	/*MongoClient.connect(url, function(err, client){
-		var db = client.db(dbName);
-		
-		assert.equal(null, err);
-		db.collection('user').updateOne({"_id": objectId(id)}, {$set: item}, function(error, result){
-			assert.equal(null, err);
-			console.log('Item updated');
-			client.close();
-		});
-		res.redirect('/get-data');
-	});*/
-
-});
-
-router.post('/delete/:id', function(req, res, next){
-	var id = req.params.id;
-	var rev = req.body.rev;
-
-	couch.del(dbname, id, rev).then(
-		function(data, header, status){
-			res.redirect('/get-data');
-		},
-		function(err){
-			res.send(err);
-		});
 });
 
 router.post('/dropdown', function(req, res, next){
@@ -178,53 +72,79 @@ router.post('/dropdown', function(req, res, next){
 		format: req.body.format
 		
 	};
-	var bookcontent = [];
-	
+
+
 	if(item.operation == "insert"){
-		console.log(item.antal + " insert was chosen");
 
+		if(item.format == "txt"){
+			console.log("txt was chosen");
+			for(var i = 0; i < item.antal; i++){
+				console.log(txtBooks[i]);
+				var doc = fs.readFileSync(txtBooks[i], "utf8");
 
-		dir.readFiles(testFolder,
-			    function(err, content, next) {
-			        if (err) throw err;
-			       
-			       		/* console.log('content:', content);  // get content of files					
-							console.log(bookcontent);*/
-							bookcontent.push(content);
-				   
-			        next();
-			    },
-			    function(err, files){
-			        if (err) throw err;
-			        console.log('finished reading files:', files); // get filepath 
-				  for(var i = 0; i < item.antal; i++){
-					couch.insert('testdb', {name: item.operation, year: item.format, comment: bookcontent[i]}).then(
-					function(data, header, status){
-						
-					},
-					function(err){
-						res.send(err);
-					});
-				}
-				   
-				});
+			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'application/epub+zip', function(err, body) {
+
+   		 	 	});
+			}
+			res.redirect('/');
+
+		}
 		
-		res.redirect('/');
+		else if(item.format == "htm"){
+			console.log("html was chosen");
+			for(var i = 0; i < item.antal; i++){
+				console.log(htmlBooks[i]);
+				var doc = fs.readFileSync(htmlBooks[i], "utf8");
+
+			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'application/epub+zip', function(err, body) {
+
+   		 	 	});
+			}
+			res.redirect('/');
+
+		}
+		
+		else if(item.format == "epub"){
+			console.log("epub was chosen");
+			for(var i = 0; i < item.antal; i++){
+				console.log(epubBooks[i]);
+				var doc = fs.readFileSync(epubBooks[i], "utf8");
+
+			  	testdb.attachment.insert(epubBooks[i], epubBooks[i], doc, 'application/epub+zip', function(err, body) {
+
+   		 	 	});
+			}
+			res.redirect('/');
+		}
+
+		else if(item.format == "mobi"){
+			console.log("mobi was chosen");
+			for(var i = 0; i < item.antal; i++){
+				console.log(mobiBooks[i]);
+				var doc = fs.readFileSync(mobiBooks[i], "utf8");
+
+			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/epub+zip', function(err, body) {
+
+   		 	 	});
+			}
+			res.redirect('/');
+		}
+
+	
+		
+	
 	}
+
 	else if(item.operation == "update"){
 		console.log(item.antal + " update was chosen");
 		var id = req.body.id;
 		var rev = req.body.rev;
 		console.log(req.body);
 	 	
-	
-			couch.update(dbname, {_id: id, _rev: rev, name: item.operation, year: item.format, comment: item.antal}).then(
-				function(data, header, status){
-					
-				},
-				function(err){
-					res.send(err);
-			});
+		testdb.insert({ _id: id, _rev: rev, comment: item.antal }, function(err, body) {
+		  if (!err)
+		    console.log(body)
+		});
 		
 		res.redirect('/');
 	}
@@ -232,37 +152,14 @@ router.post('/dropdown', function(req, res, next){
 		console.log("select was chosen");
 
 		var resultArray = [];
-		/*MongoClient.connect(url, function(err, client){
-			var db = client.db(dbName);
-			assert.equal(null, err);
-			
-			var cursor = db.collection('user').find().limit(parseInt(item.antal));
 
-			cursor.forEach(function(doc, err){
-				assert.equal(null, err);
-				resultArray.push(doc);
-			}, function(){
-				client.close();
-				res.render('index', {title: "Home", items: resultArray});
-			});
-
-		});*/
-
-		couch.listDatabases().then(function(dbs){
-		couch.get(dbname, viewUrl).then(
-			function(data, headers,status){
-				//console.log(data.data.rows);
-				res.render('index',{
-					items:data.data.rows, title: 'CouchDB'
-
-				});
-			},
-			function(err){
-				res.send(err);
-			}
-		);
-	});
-
+		testdb.list(function(err, body) {
+		  if (!err) {
+		    body.rows.forEach(function(doc) {
+		      console.log(doc);
+		    });
+		  }
+		});
 
 		res.redirect('/');
 	}
@@ -270,26 +167,11 @@ router.post('/dropdown', function(req, res, next){
 		var id = req.body.id;
 		var rev = req.body.rev;
 
-		/*MongoClient.connect(url, function(err, client){
-			var db = client.db(dbName);
-	    	for(var i = 0; i < item.antal; i++){
-			    db.collection('user').deleteOne({"year": item.format}, function(error, result){
-					assert.equal(null, err);	
-				});
-		 	}
-		 	client.close();
-		}); 
-		*/
-		
-			couch.del(dbname, id, rev).then(
-				function(data, header, status){
-					
-				},
-				function(err){
-					res.send(err);
+			testdb.destroy(id, rev, function(err, body) {
+			  if (!err)
+			    console.log(body);
 			});
 	
-		//console.log(req);
 		console.log(item.antal + " delete was chosen");
 		res.redirect('/');
 	}
