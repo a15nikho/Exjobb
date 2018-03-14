@@ -18,10 +18,6 @@ var htmlBooks = [];
 var txtBooks = [];
 var epubBooks = [];
 var mobiBooks = [];
-/* GET home page. */
-/*crouter.get('/', function(req, res, next) {
-  res.render('index', { title: 'Home', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});*/
 
 
 router.get('/insert', function(req, res, next) {
@@ -35,15 +31,11 @@ router.get('/update', function(req, res, next) {
 router.get('/delete', function(req, res, next) {
   res.render('delete', { title: 'Delete ', condition: true, anyArray: [1,2,3] }); //change title on index.html
 });
-/*
-router.get('/get', function(req, res, next) {
-  res.render('get', { title: 'Get ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});*/
-
 
 router.get('/', function(req, res, next){
 	var resultArray = [];
 	var ids = [];   
+
 
 	fs.readdir(htmlFolder, (err, files) => {
 		files.forEach(file => {
@@ -86,8 +78,6 @@ router.get('/', function(req, res, next){
 			
 			resultArray.push(doc);
 		}, function(){
-
-	
 			client.close();
 			res.render('index', {title: "Home", items: resultArray});
 		});
@@ -102,6 +92,9 @@ router.post('/dropdown', function(req, res, next){
 		format: req.body.format
 	};
 	var bookcontent = [];
+	var id = req.body.id;
+
+	console.log(req.body);
 
 	
 	if(item.operation == "insert"){
@@ -116,13 +109,13 @@ router.post('/dropdown', function(req, res, next){
 				
 					var archivobin = fs.readFileSync(txtBooks[i]); 
 					// print it out so you can check that the file is loaded correctly
-					console.log("Loading file");
-					console.log(archivobin);
+					//console.log("Loading file");
+					//console.log(archivobin);
 
 					var invoice = {};
 					invoice.bin = Binary(archivobin);
 
-					console.log("largo de invoice.bin= "+ invoice.bin.length());
+					//console.log("largo de invoice.bin= "+ invoice.bin.length());
 					// set an ID for the document for easy retrieval
 
 					var db = client.db(dbName);
@@ -134,8 +127,8 @@ router.post('/dropdown', function(req, res, next){
 
 					  db.collection('user').insert({"_id": object.name, "comment": invoice}, function(err, doc){
 					    // check the inserted document
-					    console.log("Inserting file");
-					    console.log(doc);
+					    //console.log("Inserting file");
+					    //console.log(doc);
 						db.collection("user").findOne({ _id: name },function(err,data) {
 							
 							fs.writeFile(txtBooks[i] ,data.comment.bin.buffer,function(err) {
@@ -275,25 +268,70 @@ router.post('/dropdown', function(req, res, next){
 
 		var id = req.body.id;
 
-		MongoClient.connect(url, function(err, client){
-			var db = client.db(dbName);
+
+
+
+
+		if(item.format == "txt"){
+			console.log("txt was chosen");
 			
-			assert.equal(null, err);
-			if(item.antal == "1"){
-				db.collection('user').updateOne({"_id": id}, {$set: {"name": "changed"} }, function(error, result){
-					assert.equal(null, err);
-					console.log('Item updated');
-				});
-		 	}
-		 	else{
-		 		db.collection('user').updateMany({"year": item.format}, {$set: {"name": "changed"} }, function(error, result){
-					assert.equal(null, err);
-					console.log('Item updated');
-				});
-		 	}
-			client.close();
-		});
-		res.redirect('/');
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+				for(var i = 0; i < item.antal; i++){
+			    	db.collection('user').updateOne({"_id": txtBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+						assert.equal(null, err);
+						console.log('Item updated');
+					});
+			    }
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+		
+		else if(item.format == "htm"){
+			console.log("html was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+			    	db.collection('user').updateOne({"_id": htmlBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+						assert.equal(null, err);
+						console.log('Item updated');
+					});
+			    }
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+		
+		else if(item.format == "epub"){
+			console.log("epub was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+			    	db.collection('user').updateOne({"_id": epubBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+						assert.equal(null, err);
+						console.log('Item updated');
+					});
+			    }
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+
+		else if(item.format == "mobi"){
+			console.log("mobi was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+			    	db.collection('user').updateOne({"_id": mobiBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+						assert.equal(null, err);
+						console.log('Item updated');
+					});
+			    }
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
 	}
 	else if(item.operation == "select"){
 		console.log("select was chosen");
@@ -320,17 +358,66 @@ router.post('/dropdown', function(req, res, next){
 		var id = req.body.id;
 		console.log(item.antal + " delete was chosen");
 
-		MongoClient.connect(url, function(err, client){
-			var db = client.db(dbName);
-	    	for(var i = 0; i < item.antal; i++){
-			    db.collection('user').deleteOne({"_id": id}, function(error, result){
-					assert.equal(null, err);	
-					console.log("item deleted");
-				});
-		 	}
-		 	client.close();
-		}); 
-		res.redirect('/');
+		if(item.format == "txt"){
+			console.log("txt was chosen");
+			
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+				    db.collection('user').deleteOne({"_id": txtBooks[i] }, function(error, result){
+						assert.equal(null, err);	
+						console.log("item deleted");
+					});
+			 	}
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+		
+		else if(item.format == "htm"){
+			console.log("html was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+				    db.collection('user').deleteOne({"_id": htmlBooks[i]}, function(error, result){
+						assert.equal(null, err);	
+						console.log("item deleted");
+					});
+			 	}
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+		
+		else if(item.format == "epub"){
+			console.log("epub was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+				    db.collection('user').deleteOne({"_id": epubBooks[i]}, function(error, result){
+						assert.equal(null, err);	
+						console.log("item deleted");
+					});
+			 	}
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
+
+		else if(item.format == "mobi"){
+			console.log("mobi was chosen");
+			MongoClient.connect(url, function(err, client){
+				var db = client.db(dbName);
+		    	for(var i = 0; i < item.antal; i++){
+				    db.collection('user').deleteOne({"_id": mobiBooks[i] }, function(error, result){
+						assert.equal(null, err);	
+						console.log("item deleted");
+					});
+			 	}
+			 	client.close();
+			}); 
+			res.redirect('/');
+		}
 	}
 	else{
 		console.log("something is broken!");
