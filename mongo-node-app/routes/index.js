@@ -19,23 +19,8 @@ var txtBooks = [];
 var epubBooks = [];
 var mobiBooks = [];
 
-
-router.get('/insert', function(req, res, next) {
-  res.render('insert', { title: 'Insert ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
-
-router.get('/update', function(req, res, next) {
-  res.render('update', { title: 'Update ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
-
-router.get('/delete', function(req, res, next) {
-  res.render('delete', { title: 'Delete ', condition: true, anyArray: [1,2,3] }); //change title on index.html
-});
-
 router.get('/', function(req, res, next){
 	var resultArray = [];
-	var ids = [];   
-
 
 	fs.readdir(htmlFolder, (err, files) => {
 		files.forEach(file => {
@@ -65,17 +50,12 @@ router.get('/', function(req, res, next){
 		});
 	})
 
-
 	MongoClient.connect(url, function(err, client){
 		var db = client.db(dbName);
 		assert.equal(null, err);
 		var cursor = db.collection('user').find();
 		cursor.forEach(function(doc, err){
 			assert.equal(null, err);
-			
-			  console.log(doc._id);
-			  ids.push(doc._id);
-			
 			resultArray.push(doc);
 		}, function(){
 			client.close();
@@ -92,10 +72,6 @@ router.post('/dropdown', function(req, res, next){
 		format: req.body.format
 	};
 	var bookcontent = [];
-	var id = req.body.id;
-
-	console.log(req.body);
-
 	
 	if(item.operation == "insert"){
 		console.log(item.antal + " insert was chosen");
@@ -267,10 +243,6 @@ router.post('/dropdown', function(req, res, next){
 		console.log("update was chosen");
 
 		var id = req.body.id;
-
-
-
-
 
 		if(item.format == "txt"){
 			console.log("txt was chosen");

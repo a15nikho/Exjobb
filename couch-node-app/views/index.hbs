@@ -26,16 +26,16 @@
 				<option value="mobi">mobi</option>
 			</select>
 			<select  name="id" id="id">
-				{{# each itemids }}
-					<option value="{{ this }}">
-					{{ this }}
+				{{# each items }}
+					<option value="{{ id }}">
+					{{ id }}
 					</option>
 				{{/each}}
 			</select>
 			<select name="rev" id="rev">
-				{{# each itemrevs }}
-					<option value="{{ this }}">
-					{{ this }}
+				{{# each items }}
+					<option value="{{ this.value.rev }}">
+					{{ this.value.rev }}
 					</option>
 				{{/each}}
 			</select>
@@ -48,7 +48,7 @@
 	<div>
 		{{# each items }}
 			<article>
-				<div>ID: {{ id}}</div>
+				<div>ID: {{ id }}</div>
 				<div>rev: {{ this.value.rev }}</div>
 			</article>
 		{{/each}}

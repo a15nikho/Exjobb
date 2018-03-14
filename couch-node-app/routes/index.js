@@ -16,9 +16,6 @@ var epubBooks = [];
 var mobiBooks = [];
 
 router.get('/', function(req, res, next) {
-
-	var ids = [];    
-	var revs = [];
 	var resultArray = [];
 	
 	fs.readdir(htmlFolder, (err, files) => {
@@ -50,17 +47,13 @@ router.get('/', function(req, res, next) {
 	})
 
 	testdb.list(function(err, body) {
-	  if (!err) {
-	    body.rows.forEach(function(doc) {
-	      
-			for (var i in doc) {
-				revs.push(doc.value.rev);
-				ids.push(doc.id);
-			}
-	    });
-	  }
-	    	 
-  	res.render('index', { title: 'CouchDB', itemids: ids, itemrevs: revs, items: body.rows });
+		if (!err) {
+		body.rows.forEach(function(doc) {
+			resultArray.push(doc);
+		});
+		}
+  
+		res.render('index', { title: 'CouchDB', items: resultArray });
 	});
 });
 
@@ -73,7 +66,6 @@ router.post('/dropdown', function(req, res, next){
 		
 	};
 
-
 	if(item.operation == "insert"){
 
 		if(item.format == "txt"){
@@ -82,11 +74,11 @@ router.post('/dropdown', function(req, res, next){
 				console.log(txtBooks[i]);
 				var doc = fs.readFileSync(txtBooks[i], "utf8");
 
-			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'application/epub+zip', function(err, body) {
+			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'text/plain', function(err, body) {
 
    		 	 	});
 			}
-			res.redirect('/');
+		
 
 		}
 		
@@ -96,11 +88,11 @@ router.post('/dropdown', function(req, res, next){
 				console.log(htmlBooks[i]);
 				var doc = fs.readFileSync(htmlBooks[i], "utf8");
 
-			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'application/epub+zip', function(err, body) {
+			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'text/html', function(err, body) {
 
    		 	 	});
 			}
-			res.redirect('/');
+			
 
 		}
 		
@@ -114,7 +106,7 @@ router.post('/dropdown', function(req, res, next){
 
    		 	 	});
 			}
-			res.redirect('/');
+		
 		}
 
 		else if(item.format == "mobi"){
@@ -123,30 +115,26 @@ router.post('/dropdown', function(req, res, next){
 				console.log(mobiBooks[i]);
 				var doc = fs.readFileSync(mobiBooks[i], "utf8");
 
-			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/epub+zip', function(err, body) {
+			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/x-mobipocket-ebook ', function(err, body) {
 
    		 	 	});
 			}
-			res.redirect('/');
+			
 		}
-
-	
-		
-	
 	}
 
 	else if(item.operation == "update"){
 		console.log(item.antal + " update was chosen");
 		var id = req.body.id;
 		var rev = req.body.rev;
-		console.log(req.body);
+		console.log(rev);
 	 	
 		testdb.insert({ _id: id, _rev: rev, comment: item.antal }, function(err, body) {
-		  if (!err)
-		    console.log(body)
+		  //if (!err)
+		    //console.log(body);
 		});
 		
-		res.redirect('/');
+		
 	}
 	else if(item.operation == "select"){
 		console.log("select was chosen");
@@ -156,12 +144,12 @@ router.post('/dropdown', function(req, res, next){
 		testdb.list(function(err, body) {
 		  if (!err) {
 		    body.rows.forEach(function(doc) {
-		      console.log(doc);
+		      //console.log(doc);
 		    });
 		  }
 		});
 
-		res.redirect('/');
+		
 	}
 	else if(item.operation == "delete"){
 		var id = req.body.id;
@@ -173,11 +161,12 @@ router.post('/dropdown', function(req, res, next){
 			});
 	
 		console.log(item.antal + " delete was chosen");
-		res.redirect('/');
+		
 	}
 	else{
 		console.log("something is broken!");
 	}
 	
+	res.redirect('/');
 });
 module.exports = router;
