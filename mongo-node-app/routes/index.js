@@ -65,6 +65,23 @@ router.get('/', function(req, res, next){
 	});
 });
 
+router.get('/get', function(req, res, next) {
+	var resultArray = [];
+	MongoClient.connect(url, function(err, client){
+		var db = client.db(dbName);
+		assert.equal(null, err);
+		var cursor = db.collection('user').find();
+		cursor.forEach(function(doc, err){
+			assert.equal(null, err);
+			resultArray.push(doc);
+		}, function(){
+			client.close();
+			res.render('get', {title: "Home", items: resultArray});
+		});
+
+	});
+});
+
 router.post('/dropdown', function(req, res, next){
 	var item = {
 		antal: req.body.antal,
@@ -75,7 +92,6 @@ router.post('/dropdown', function(req, res, next){
 	
 	if(item.operation == "insert"){
 		console.log(item.antal + " insert was chosen");
-
 
 		if(item.format == "txt"){
 			console.log("txt was chosen");
