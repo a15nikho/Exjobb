@@ -138,6 +138,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-mongo.txt', duration+" txt \r\n");
 				}
 			
 			});
@@ -180,6 +182,8 @@ router.post('/dropdown', function(req, res, next){
 						});
 					  	var duration = clock(start);
 						console.log("Took "+duration+"ms");
+
+						fs.appendFileSync('./results/results-mongo.txt', duration+" html \r\n");
 					}
 				
 				});
@@ -222,6 +226,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-mongo.txt', duration+" epub \r\n");
 				}
 				
 			});
@@ -264,6 +270,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-mongo.txt', duration+" mobi \r\n");
 				}
 				
 			});
@@ -351,10 +359,10 @@ router.post('/dropdown', function(req, res, next){
 	}
 	else if(item.operation == "select"){
 		console.log("select was chosen");
-
+		var start = clock();
 		var resultArray = [];
 		MongoClient.connect(url, function(err, client){
-			var start = clock();
+			
 			var db = client.db(dbName);
 			assert.equal(null, err);
 
@@ -364,10 +372,11 @@ router.post('/dropdown', function(req, res, next){
 				assert.equal(null, err);
 				resultArray.push(doc);
 			}, function(){
-				var duration = clock(start);
-				console.log("Took "+duration+"ms");
+				
 				client.close();
 				res.render('index', {title: "Home", items: resultArray});
+				var duration = clock(start);
+				console.log("Took "+duration+"ms");
 			});
 
 		});

@@ -1,0 +1,4 @@
+2 html 
+2 txt 
+2 epub 
+6 mobi 
