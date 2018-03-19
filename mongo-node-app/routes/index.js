@@ -139,7 +139,7 @@ router.post('/dropdown', function(req, res, next){
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
 
-					fs.appendFileSync('./results/results-mongo.txt', duration+" txt \r\n");
+					fs.appendFileSync('./results/results-insert.txt', duration+" ms  txt " + item.antal + "\r\n");
 				}
 			
 			});
@@ -151,7 +151,7 @@ router.post('/dropdown', function(req, res, next){
 				MongoClient.connect(url, function(err, client) {
 					for(var i = 0; i < item.antal; i++){
 						var start = clock();
-						var archivobin = fs.readFileSync(htmlBooks[i]); 
+						/*var archivobin = fs.readFileSync(htmlBooks[i]); 
 						// print it out so you can check that the file is loaded correctly
 						console.log("Loading file");
 						console.log(archivobin);
@@ -160,7 +160,7 @@ router.post('/dropdown', function(req, res, next){
 						invoice.bin = Binary(archivobin);
 
 						console.log("largo de invoice.bin= "+ invoice.bin.length());
-						// set an ID for the document for easy retrieval
+						// set an ID for the document for easy retrieval*/
 
 						var db = client.db(dbName);
 						var name = htmlBooks[i];
@@ -169,13 +169,13 @@ router.post('/dropdown', function(req, res, next){
 							object.name = name;
 							object.data = new Binary(binData);
 
-						  db.collection('user').insert({"_id": object.name, "comment": invoice}, function(err, doc){
+						  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 						    // check the inserted document
 						    console.log("Inserting file");
 						    console.log(doc);
 							db.collection("user").findOne({ _id: name },function(err,data) {
-								
-								fs.writeFile(htmlBooks[i] ,data.comment.bin.buffer,function(err) {
+								console.log(data);
+								fs.writeFile(htmlBooks[i] ,data.comment.buffer,function(err) {
 									console.log("done");
 								});
 							});
@@ -183,7 +183,7 @@ router.post('/dropdown', function(req, res, next){
 					  	var duration = clock(start);
 						console.log("Took "+duration+"ms");
 
-						fs.appendFileSync('./results/results-mongo.txt', duration+" html \r\n");
+						fs.appendFileSync('./results/results-insert.txt', duration+" ms  html " + item.antal + "\r\n");
 					}
 				
 				});
@@ -227,7 +227,7 @@ router.post('/dropdown', function(req, res, next){
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
 
-					fs.appendFileSync('./results/results-mongo.txt', duration+" epub \r\n");
+					fs.appendFileSync('./results/results-insert.txt', duration+" ms  epub " + item.antal + "\r\n");
 				}
 				
 			});
@@ -262,7 +262,7 @@ router.post('/dropdown', function(req, res, next){
 					    console.log("Inserting file");
 					    console.log(doc);
 						db.collection("user").findOne({ _id: name },function(err,data) {
-							
+							//console.log(data);
 							fs.writeFile(mobiBooks[i] ,data.comment.bin.buffer,function(err) {
 								console.log("done");
 							});
@@ -271,7 +271,7 @@ router.post('/dropdown', function(req, res, next){
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
 
-					fs.appendFileSync('./results/results-mongo.txt', duration+" mobi \r\n");
+					fs.appendFileSync('./results/results-insert.txt', duration+" ms mobi " + item.antal + "\r\n");
 				}
 				
 			});
@@ -297,6 +297,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-update.txt', duration+" ms txt " + item.antal + "\r\n");
 			    }
 			 	client.close();
 			}); 
@@ -315,6 +317,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-update.txt', duration+" ms html " + item.antal + "\r\n");
 			    }
 			 	client.close();
 			}); 
@@ -333,6 +337,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-update.txt', duration+" ms epub " + item.antal + "\r\n");
 			    }
 			 	client.close();
 			}); 
@@ -351,6 +357,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-update.txt', duration+" ms mobi " + item.antal + "\r\n");
 			    }
 			 	client.close();
 			}); 
@@ -377,6 +385,8 @@ router.post('/dropdown', function(req, res, next){
 				res.render('index', {title: "Home", items: resultArray});
 				var duration = clock(start);
 				console.log("Took "+duration+"ms");
+
+				fs.appendFileSync('./results/results-select.txt', duration+" ms select " + item.antal + "\r\n");
 			});
 
 		});
@@ -400,6 +410,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-delete.txt', duration+" ms txt " + item.antal + "\r\n");
 			 	}
 			 	client.close();
 			}); 
@@ -419,6 +431,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-delete.txt', duration+" ms html " + item.antal + "\r\n");
 			 	}
 			 	client.close();
 			}); 
@@ -438,6 +452,8 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+
+					fs.appendFileSync('./results/results-delete.txt', duration+" ms epub " + item.antal + "\r\n");
 			 	}
 			 	client.close();
 			}); 
@@ -457,6 +473,7 @@ router.post('/dropdown', function(req, res, next){
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
+					fs.appendFileSync('./results/results-delete.txt', duration+" ms mobi " + item.antal + "\r\n");
 			 	}
 			 	client.close();
 			}); 

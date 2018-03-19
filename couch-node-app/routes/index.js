@@ -97,18 +97,18 @@ router.post('/dropdown', function(req, res, next){
 				console.log(txtBooks[i]);
 				var doc = fs.readFileSync(txtBooks[i], "utf8");
 
-			  	/*testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'text/plain', function(err, body) {
+			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'text/plain', function(err, body) {
 
-   		 	 	});*/
+   		 	 	});
 
-   		 	 	testdb.multipart.insert(txtBooks[i], [{ data: doc, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
+   		 	 	/*testdb.multipart.insert(txtBooks[i], [{ data: doc, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
 			        if (!err)
 			          console.log(body);
-			    });
+			    });*/
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
-			fs.appendFileSync('./results/results-couch.txt', duration+" txt \r\n");
+			fs.appendFileSync('./results/results-insert.txt', duration+" ms txt " + item.antal + "\r\n");
 
 			}
 			
@@ -123,18 +123,18 @@ router.post('/dropdown', function(req, res, next){
 				console.log(htmlBooks[i]);
 				var doc = fs.readFileSync(htmlBooks[i], "utf8");
 
-			  	/*testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'text/html', function(err, body) {
+			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'text/html', function(err, body) {
 
-   		 	 	});*/
-
-   		 	 	testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
+   		 	 	});
+   		 	 	/*testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
 			        if (!err)
 			          console.log(body);
-			    });
+			    });*/
+
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
-				fs.appendFileSync('./results/results-couch.txt', duration+" html \r\n");
+				fs.appendFileSync('./results/results-insert.txt', duration+" ms html " + item.antal + "\r\n");
 			}
 			res.redirect('/');
 
@@ -147,18 +147,18 @@ router.post('/dropdown', function(req, res, next){
 				console.log(epubBooks[i]);
 				var doc = fs.readFileSync(epubBooks[i], "utf8");
 
-			  	/*testdb.attachment.insert(epubBooks[i], epubBooks[i], doc, 'application/epub+zip', function(err, body) {
+			  	testdb.attachment.insert(epubBooks[i], epubBooks[i], doc, 'application/epub+zip', function(err, body) {
 
-   		 	 	});*/
-
+   		 	 	});
+   		 	 	/*console.log(epubBooks[i]);
    		 	 	testdb.multipart.insert(epubBooks[i], [{ data: doc, content_type: 'application/epub+zip'}], epubBooks[i], function(err, body) {
 			        if (!err)
 			          console.log(body);
-			    });
+			    });*/
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
-				fs.appendFileSync('./results/results-couch.txt', duration+" epub \r\n");
+				fs.appendFileSync('./results/results-insert.txt', duration+" ms epub " + item.antal + "\r\n");
 			}
 			res.redirect('/');
 		}
@@ -170,18 +170,18 @@ router.post('/dropdown', function(req, res, next){
 				console.log(mobiBooks[i]);
 				var doc = fs.readFileSync(mobiBooks[i], "utf8");
 
-			  	/*testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/x-mobipocket-ebook ', function(err, body) {
+			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/x-mobipocket-ebook ', function(err, body) {
 
-   		 	 	});*/
+   		 	 	});
 
-   		 	 	testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
+   		 	 	/*testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
 			        if (!err)
 			          console.log(body);
-			    });
+			    });*/
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
-				fs.appendFileSync('./results/results-couch.txt', duration+" mobi \r\n");
+				fs.appendFileSync('./results/results-insert.txt', duration+" ms mobi " + item.antal + " \r\n");
 			}
 			res.redirect('/');
 		}
@@ -207,19 +207,21 @@ router.post('/dropdown', function(req, res, next){
 
 				});
 
-				if(item.format == "txt"){
+				/*if(item.format == "txt"){
 					console.log("txt was chosen");
 
-					var start = clock();
+					//var start = clock();
 					testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, comment: item.antal }, function(err, body) {
 
 					});
-					var duration = clock(start);
-					console.log("Took "+duration+"ms");
+					//var duration = clock(start);
+					//console.log("Took "+duration+"ms");
 					
-				}
+				}*/
 				var duration = clock(start);
 				console.log("Took "+duration+"ms");
+
+				fs.appendFileSync('./results/results-update.txt', duration+" ms update " + item.antal + " \r\n");
 			}
 			res.redirect('/');
 		});
@@ -247,6 +249,8 @@ router.post('/dropdown', function(req, res, next){
 			res.render('index', { title: 'CouchDB', items: resultArray });
 			var duration = clock(start);
 			console.log("Took "+duration+"ms");
+
+			fs.appendFileSync('./results/results-select.txt', duration+" ms select " + item.antal + " \r\n");
 		});
 		
 
@@ -258,7 +262,7 @@ router.post('/dropdown', function(req, res, next){
 		//console.log(req);
 		console.log(req.params);
 		var resultArray = [];
-
+		var start = clock();
 		testdb.list({limit: item.antal, _id: htmlBooks[0]}, function(err, body) {
 			if (!err) {
 			for(var j = 0; j < item.antal; j++){
@@ -271,19 +275,22 @@ router.post('/dropdown', function(req, res, next){
 
 			
 			
-			console.log(resultArray);
-			for(var i = 0; i < item.antal; i++){
-				var start = clock();
-				testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
-				  //if (!err)
-				    //console.log(body);
-				});
-				var duration = clock(start);
-				console.log("Took "+duration+"ms");
-			}
+		console.log(resultArray);
+		for(var i = 0; i < item.antal; i++){
+			//var start = clock();
+			testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
+			  //if (!err)
+			    //console.log(body);
+			});
+			//var duration = clock(start);
+			//console.log("Took "+duration+"ms");
+		}
 			res.redirect('/');
 		});
-	
+		var duration = clock(start);
+		console.log("Took "+duration+"ms");
+		fs.appendFileSync('./results/results-delete.txt', duration+" ms delete " + item.antal + "\r\n");
+
 		console.log(item.antal + " delete was chosen");
 		
 	}
