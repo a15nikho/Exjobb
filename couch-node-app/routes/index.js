@@ -95,13 +95,19 @@ router.post('/dropdown', function(req, res, next){
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
 				console.log(txtBooks[i]);
-				var doc = fs.readFileSync(txtBooks[i], "utf8");
+				//var doc = fs.readFileSync(txtBooks[i], "utf8");
 
-			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], doc, 'text/plain', function(err, body) {
+				var name = txtBooks[i];
+				var binData = fs.readFileSync(name, "utf8");
+				var object = {};
+					object.name = name;
+					object.data = new Buffer(binData, 'binary').toString('base64');
+				console.log(object.data);
+			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], object.data, 'text/plain', function(err, body) {
 
    		 	 	});
 
-   		 	 	/*testdb.multipart.insert(txtBooks[i], [{ data: doc, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
+   		 	 	/*testdb.multipart.insert(txtBooks[i], [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
 			        if (!err)
 			          console.log(body);
 			    });*/
@@ -123,7 +129,13 @@ router.post('/dropdown', function(req, res, next){
 				console.log(htmlBooks[i]);
 				var doc = fs.readFileSync(htmlBooks[i], "utf8");
 
-			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], doc, 'text/html', function(err, body) {
+				var name = htmlBooks[i];
+				var binData = fs.readFileSync(name, "utf8");
+				var object = {};
+					object.name = name;
+					object.data = new Buffer(binData, 'binary').toString('base64');
+
+			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], object.data, 'text/html', function(err, body) {
 
    		 	 	});
    		 	 	/*testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
@@ -147,7 +159,13 @@ router.post('/dropdown', function(req, res, next){
 				console.log(epubBooks[i]);
 				var doc = fs.readFileSync(epubBooks[i], "utf8");
 
-			  	testdb.attachment.insert(epubBooks[i], epubBooks[i], doc, 'application/epub+zip', function(err, body) {
+				var name = epubBooks[i];
+				var binData = fs.readFileSync(name, "utf8");
+				var object = {};
+					object.name = name;
+					object.data = new Buffer(binData, 'binary').toString('base64');
+
+			  	testdb.attachment.insert(epubBooks[i], epubBooks[i], object.data, 'application/epub+zip', function(err, body) {
 
    		 	 	});
    		 	 	/*console.log(epubBooks[i]);
@@ -170,7 +188,13 @@ router.post('/dropdown', function(req, res, next){
 				console.log(mobiBooks[i]);
 				var doc = fs.readFileSync(mobiBooks[i], "utf8");
 
-			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], doc, 'application/x-mobipocket-ebook ', function(err, body) {
+				var name = mobiBooks[i];
+				var binData = fs.readFileSync(name, "utf8");
+				var object = {};
+					object.name = name;
+					object.data = new Buffer(binData, 'binary').toString('base64');
+
+			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], object.data, 'application/x-mobipocket-ebook ', function(err, body) {
 
    		 	 	});
 
