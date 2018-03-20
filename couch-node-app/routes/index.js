@@ -53,11 +53,10 @@ router.get('/', function(req, res, next) {
 	})
 
 	testdb.list(function(err, body) {
-		if (!err) {
+		assert.equal(null, err);
 		body.rows.forEach(function(doc) {
 			resultArray.push(doc);
 		});
-		}
 		res.render('index', { title: 'CouchDB', items: resultArray });
 	});
 	
@@ -66,15 +65,17 @@ router.get('/', function(req, res, next) {
 router.get('/get', function(req, res, next) {
 	var resultArray = [];
 	testdb.list(function(err, body) {
+		assert.equal(null, err);
 		//console.log(body);
-		if (!err) {
+	
 		body.rows.forEach(function(doc) {
+			assert.equal(null, err);
 			resultArray.push(doc);
 			//console.log(doc);
 		});
-	}
-	console.log(resultArray);
-	res.render('get', { title: 'CouchDB', items: resultArray });
+	
+		console.log(resultArray);
+		res.render('get', { title: 'CouchDB', items: resultArray });
 	});
 });
 
@@ -195,11 +196,11 @@ router.post('/dropdown', function(req, res, next){
 	 	//var start = clock();
 	 	var resultArray = [];
 	 	testdb.list(function(err, body) {
-			if (!err) {
-				body.rows.forEach(function(doc) {
-					resultArray.push(doc);
-				});
-			}
+			assert.equal(null, err);
+			body.rows.forEach(function(doc) {
+				resultArray.push(doc);
+			});
+			
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
 				testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, comment: item.antal }, function(err, body) {
@@ -239,12 +240,12 @@ router.post('/dropdown', function(req, res, next){
 		var resultArray = [];
 		var start = clock();
 		testdb.list({limit: item.antal}, function(err, body) {
-			if (!err) {
+			assert.equal(null, err);
 			body.rows.forEach(function(doc) {
 			  //console.log(doc);
 			  resultArray.push(doc);
 			});
-			}
+			
 			res.render('index', { title: 'CouchDB', items: resultArray });
 			var duration = clock(start);
 			console.log("Took "+duration+"ms");
@@ -263,27 +264,23 @@ router.post('/dropdown', function(req, res, next){
 		var resultArray = [];
 		var start = clock();
 		testdb.list({limit: item.antal, _id: htmlBooks[0]}, function(err, body) {
-			if (!err) {
+			assert.equal(null, err);
 			for(var j = 0; j < item.antal; j++){
 				body.rows.forEach(function(doc) {
 					resultArray.push(doc);
 				});
-			}
-			
-		} 
+			} 
 
-			
-			
-		console.log(resultArray);
-		for(var i = 0; i < item.antal; i++){
-			//var start = clock();
-			testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
-			  //if (!err)
-			    //console.log(body);
-			});
-			//var duration = clock(start);
-			//console.log("Took "+duration+"ms");
-		}
+			console.log(resultArray);
+			for(var i = 0; i < item.antal; i++){
+				//var start = clock();
+				testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
+				  //if (!err)
+				    //console.log(body);
+				});
+				//var duration = clock(start);
+				//console.log("Took "+duration+"ms");
+			}
 			res.redirect('/');
 		});
 		var duration = clock(start);
