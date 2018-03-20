@@ -5,8 +5,6 @@ var objectId = require('mongodb').ObjectID;
 var Binary = require('mongodb').Binary;
 var assert = require('assert');
 var fs = require('fs');
-var dir = require('node-dir');
-var present = require('present');
 
 const testFolder = './tests/';
 var url = 'mongodb://localhost:27017/test'; //url till databas och sedan definieras vilken databas

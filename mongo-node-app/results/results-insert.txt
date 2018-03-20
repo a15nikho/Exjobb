@@ -8,3 +8,4 @@
 2 ms mobi 1
 4 ms  epub 1
 1 ms  txt 1
+4 ms  epub 1

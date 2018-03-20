@@ -7,3 +7,4 @@
 0 ms html 1
 0 ms mobi 1
 0 ms txt 1
+1 ms epub 1
