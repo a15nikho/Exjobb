@@ -105,17 +105,7 @@ router.post('/dropdown', function(req, res, next){
 			MongoClient.connect(url, function(err, client) {
 				for(var i = 0; i < item.antal; i++){
 					var start = clock();
-					var archivobin = fs.readFileSync(txtBooks[i]); 
-					// print it out so you can check that the file is loaded correctly
-					//console.log("Loading file");
-					//console.log(archivobin);
-
-					var invoice = {};
-					invoice.bin = Binary(archivobin);
-
-					//console.log("largo de invoice.bin= "+ invoice.bin.length());
-					// set an ID for the document for easy retrieval
-
+					
 					var db = client.db(dbName);
 					var name = txtBooks[i];
 					var binData = fs.readFileSync(name);
@@ -123,13 +113,13 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Binary(binData);
 
-					  db.collection('user').insert({"_id": object.name, "comment": invoice}, function(err, doc){
+					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
 					    //console.log("Inserting file");
 					    //console.log(doc);
 						db.collection("user").findOne({ _id: name },function(err,data) {
 							
-							fs.writeFile(txtBooks[i] ,data.comment.bin.buffer,function(err) {
+							fs.writeFile(txtBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
 						});
@@ -149,16 +139,6 @@ router.post('/dropdown', function(req, res, next){
 				MongoClient.connect(url, function(err, client) {
 					for(var i = 0; i < item.antal; i++){
 						var start = clock();
-						/*var archivobin = fs.readFileSync(htmlBooks[i]); 
-						// print it out so you can check that the file is loaded correctly
-						console.log("Loading file");
-						console.log(archivobin);
-
-						var invoice = {};
-						invoice.bin = Binary(archivobin);
-
-						console.log("largo de invoice.bin= "+ invoice.bin.length());
-						// set an ID for the document for easy retrieval*/
 
 						var db = client.db(dbName);
 						var name = htmlBooks[i];
@@ -193,15 +173,6 @@ router.post('/dropdown', function(req, res, next){
 			MongoClient.connect(url, function(err, client) {
 				for(var i = 0; i < item.antal; i++){
 					var start = clock();
-					var archivobin = fs.readFileSync(epubBooks[i]); 
-					// print it out so you can check that the file is loaded correctly
-					console.log("Loading file");
-					console.log(archivobin);
-
-					var invoice = {};
-					invoice.bin = Binary(archivobin);
-
-					console.log("largo de invoice.bin= "+ invoice.bin.length());
 					// set an ID for the document for easy retrieval
 
 					var db = client.db(dbName);
@@ -211,13 +182,13 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Binary(binData);
 
-					  db.collection('user').insert({"_id": object.name, "comment": invoice}, function(err, doc){
+					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
 					    console.log("Inserting file");
 					    console.log(doc);
 						db.collection("user").findOne({ _id: name },function(err,data) {
 							
-							fs.writeFile(epubBooks[i] ,data.comment.bin.buffer,function(err) {
+							fs.writeFile(epubBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
 						});
@@ -237,16 +208,6 @@ router.post('/dropdown', function(req, res, next){
 			MongoClient.connect(url, function(err, client) {
 				for(var i = 0; i < item.antal; i++){
 					var start = clock();
-					var archivobin = fs.readFileSync(mobiBooks[i]); 
-					// print it out so you can check that the file is loaded correctly
-					console.log("Loading file");
-					console.log(archivobin);
-
-					var invoice = {};
-					invoice.bin = Binary(archivobin);
-
-					console.log("largo de invoice.bin= "+ invoice.bin.length());
-					// set an ID for the document for easy retrieval
 
 					var db = client.db(dbName);
 					var name = mobiBooks[i];
@@ -255,13 +216,13 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Binary(binData);
 
-					  db.collection('user').insert({"_id": object.name, "comment": invoice}, function(err, doc){
+					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
 					    console.log("Inserting file");
 					    console.log(doc);
 						db.collection("user").findOne({ _id: name },function(err,data) {
 							//console.log(data);
-							fs.writeFile(mobiBooks[i] ,data.comment.bin.buffer,function(err) {
+							fs.writeFile(mobiBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
 						});
