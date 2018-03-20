@@ -3,7 +3,6 @@ var router = express.Router();
 var nano = require('nano')('http://localhost:5984');
 var assert = require('assert');
 var fs = require('fs');
-var present = require('present');
 
 const htmlFolder = './tests/html/';
 const txtFolder = './tests/txt/';
