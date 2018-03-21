@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
-var objectId = require('mongodb').ObjectID;
 var Binary = require('mongodb').Binary;
 var assert = require('assert');
 var fs = require('fs');
@@ -65,7 +64,7 @@ router.get('/', function(req, res, next){
 			resultArray.push(doc);
 		}, function(){
 			client.close();
-			res.render('index', {title: "Home", items: resultArray});
+			res.render('index', {title: "MongoDB", items: resultArray});
 		});
 
 	});
@@ -111,7 +110,8 @@ router.post('/dropdown', function(req, res, next){
 					var binData = fs.readFileSync(name);
 					var object = {};
 						object.name = name;
-						object.data = new Binary(binData);
+						//object.data = new Binary(binData);
+						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
@@ -145,7 +145,7 @@ router.post('/dropdown', function(req, res, next){
 						var binData = fs.readFileSync(name);
 						var object = {};
 							object.name = name;
-							object.data = new Binary(binData);
+							object.data = new Buffer(binData, 'binary').toString('base64');
 
 						  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 						    // check the inserted document
@@ -180,7 +180,7 @@ router.post('/dropdown', function(req, res, next){
 					var binData = fs.readFileSync(name);
 					var object = {};
 						object.name = name;
-						object.data = new Binary(binData);
+						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
@@ -214,7 +214,7 @@ router.post('/dropdown', function(req, res, next){
 					var binData = fs.readFileSync(name);
 					var object = {};
 						object.name = name;
-						object.data = new Binary(binData);
+						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
