@@ -102,15 +102,11 @@ router.post('/dropdown', function(req, res, next){
 				var object = {};
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
-				console.log(object.data);
-			  	testdb.attachment.insert(txtBooks[i], txtBooks[i], object.data, 'text/plain', function(err, body) {
 
-   		 	 	});
+   		 	 	testdb.multipart.insert(txtBooks[i], [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
+			       
+			    });
 
-   		 	 	/*testdb.multipart.insert(txtBooks[i], [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
-			        if (!err)
-			          console.log(body);
-			    });*/
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
@@ -135,13 +131,12 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-			  	testdb.attachment.insert(htmlBooks[i], htmlBooks[i], object.data, 'text/html', function(err, body) {
+			  	/*testdb.attachment.insert(htmlBooks[i], htmlBooks[i], object.data, 'text/html', function(err, body) {
 
-   		 	 	});
-   		 	 	/*testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
-			        if (!err)
-			          console.log(body);
-			    });*/
+   		 	 	});*/
+   		 	 	testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
+			        
+			    });
 
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
@@ -165,14 +160,13 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-			  	testdb.attachment.insert(epubBooks[i], epubBooks[i], object.data, 'application/epub+zip', function(err, body) {
+			  	/*testdb.attachment.insert(epubBooks[i], epubBooks[i], object.data, 'application/epub+zip', function(err, body) {
 
-   		 	 	});
-   		 	 	/*console.log(epubBooks[i]);
+   		 	 	});*/
+   		 	 	//console.log(epubBooks[i]);
    		 	 	testdb.multipart.insert(epubBooks[i], [{ data: doc, content_type: 'application/epub+zip'}], epubBooks[i], function(err, body) {
-			        if (!err)
-			          console.log(body);
-			    });*/
+			        
+			    });
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
@@ -194,14 +188,13 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-			  	testdb.attachment.insert(mobiBooks[i], mobiBooks[i], object.data, 'application/x-mobipocket-ebook ', function(err, body) {
+			  	/*testdb.attachment.insert(mobiBooks[i], mobiBooks[i], object.data, 'application/x-mobipocket-ebook ', function(err, body) {
 
-   		 	 	});
+   		 	 	});*/
 
-   		 	 	/*testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
-			        if (!err)
-			          console.log(body);
-			    });*/
+   		 	 	testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
+			        
+			    });
    		 	 	var duration = clock(start);
 				console.log("Took "+duration+"ms");
 
@@ -227,21 +220,73 @@ router.post('/dropdown', function(req, res, next){
 			
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, comment: item.antal }, function(err, body) {
+				/*testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, name: item.antal, _attachment: resultArray[i]  }, function(err, body) {
 
-				});
+				});*/
+				if(item.format == "txt"){
+					var doc = fs.readFileSync(txtBooks[i], "utf8");
 
-				/*if(item.format == "txt"){
-					console.log("txt was chosen");
+					var name = txtBooks[i];
+					var binData = fs.readFileSync(name, "utf8");
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					//var start = clock();
-					testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, comment: item.antal }, function(err, body) {
+					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
+				        if (!err)
+				          console.log(body);
+				    });
 
-					});
-					//var duration = clock(start);
-					//console.log("Took "+duration+"ms");
-					
-				}*/
+				}
+
+				else if(item.format == "htm"){
+					var doc = fs.readFileSync(htmlBooks[i], "utf8");
+
+					var name = htmlBooks[i];
+					var binData = fs.readFileSync(name, "utf8");
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
+				        if (!err)
+				          console.log(body);
+				    });
+
+				}
+
+				else if(item.format == "epub"){
+					var doc = fs.readFileSync(epubBooks[i], "utf8");
+
+					var name = epubBooks[i];
+					var binData = fs.readFileSync(name, "utf8");
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], epubBooks[i], function(err, body) {
+				        if (!err)
+				          console.log(body);
+				    });
+
+				}
+
+				else if(item.format == "mobi"){
+					var doc = fs.readFileSync(mobiBooks[i], "utf8");
+
+					var name = mobiBooks[i];
+					var binData = fs.readFileSync(name, "utf8");
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], mobiBooks[i], function(err, body) {
+				        if (!err)
+				          console.log(body);
+				    });
+
+				}
+
 				var duration = clock(start);
 				console.log("Took "+duration+"ms");
 

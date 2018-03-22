@@ -117,12 +117,12 @@ router.post('/dropdown', function(req, res, next){
 					    // check the inserted document
 					    //console.log("Inserting file");
 					    //console.log(doc);
-						db.collection("user").findOne({ _id: name },function(err,data) {
+						/*db.collection("user").findOne({ _id: name },function(err,data) {
 							
 							fs.writeFile(txtBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
-						});
+						});*/
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
@@ -151,12 +151,12 @@ router.post('/dropdown', function(req, res, next){
 						    // check the inserted document
 						    console.log("Inserting file");
 						    console.log(doc);
-							db.collection("user").findOne({ _id: name },function(err,data) {
+							/*db.collection("user").findOne({ _id: name },function(err,data) {
 								console.log(data);
 								fs.writeFile(htmlBooks[i] ,data.comment.buffer,function(err) {
 									console.log("done");
 								});
-							});
+							});*/
 						});
 					  	var duration = clock(start);
 						console.log("Took "+duration+"ms");
@@ -186,12 +186,12 @@ router.post('/dropdown', function(req, res, next){
 					    // check the inserted document
 					    console.log("Inserting file");
 					    console.log(doc);
-						db.collection("user").findOne({ _id: name },function(err,data) {
+						/*db.collection("user").findOne({ _id: name },function(err,data) {
 							
 							fs.writeFile(epubBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
-						});
+						});*/
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
@@ -216,16 +216,16 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
+					db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 					    // check the inserted document
 					    console.log("Inserting file");
 					    console.log(doc);
-						db.collection("user").findOne({ _id: name },function(err,data) {
+						/*db.collection("user").findOne({ _id: name },function(err,data) {
 							//console.log(data);
 							fs.writeFile(mobiBooks[i] ,data.comment.buffer,function(err) {
 								console.log("done");
 							});
-						});
+						});*/
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
@@ -355,15 +355,21 @@ router.post('/dropdown', function(req, res, next){
 		var id = req.body.id;
 		console.log(item.antal + " delete was chosen");
 
-		if(item.format == "txt"){
-			console.log("txt was chosen");
-			
-			MongoClient.connect(url, function(err, client){
-			
+
+		var resultArray = [];
+		MongoClient.connect(url, function(err, client){
+			var db = client.db(dbName);
+			assert.equal(null, err);
+			var cursor = db.collection('user').find();
+			cursor.forEach(function(doc, err){
+				assert.equal(null, err);
+				resultArray.push(doc);
+			}, function(){
 				var db = client.db(dbName);
 		    	for(var i = 0; i < item.antal; i++){
 	    			var start = clock();
-				    db.collection('user').deleteOne({"_id": txtBooks[i] }, function(error, result){
+	    			console.log(resultArray[i]._id);
+				    db.collection('user').deleteOne({"_id": resultArray[i]._id }, function(error, result){
 						assert.equal(null, err);	
 						console.log("item deleted");
 					});
@@ -371,73 +377,12 @@ router.post('/dropdown', function(req, res, next){
 					console.log("Took "+duration+"ms");
 
 					fs.appendFileSync('./results/results-delete.txt', duration+" ms txt " + item.antal + "\r\n");
-			 	}
-			 	client.close();
-			}); 
-			res.redirect('/');
-		}
-		
-		else if(item.format == "htm"){
-			console.log("html was chosen");
-			MongoClient.connect(url, function(err, client){
-			
-				var db = client.db(dbName);
-		    	for(var i = 0; i < item.antal; i++){
-	    			var start = clock();
-				    db.collection('user').deleteOne({"_id": htmlBooks[i]}, function(error, result){
-						assert.equal(null, err);	
-						console.log("item deleted");
-					});
-					var duration = clock(start);
-					console.log("Took "+duration+"ms");
 
-					fs.appendFileSync('./results/results-delete.txt', duration+" ms html " + item.antal + "\r\n");
-			 	}
-			 	client.close();
-			}); 
-			res.redirect('/');
-		}
-		
-		else if(item.format == "epub"){
-			console.log("epub was chosen");
-			MongoClient.connect(url, function(err, client){
-				
-				var db = client.db(dbName);
-		    	for(var i = 0; i < item.antal; i++){
-		    		var start = clock();
-				    db.collection('user').deleteOne({"_id": epubBooks[i]}, function(error, result){
-						assert.equal(null, err);	
-						console.log("item deleted");
-					});
-					var duration = clock(start);
-					console.log("Took "+duration+"ms");
-
-					fs.appendFileSync('./results/results-delete.txt', duration+" ms epub " + item.antal + "\r\n");
-			 	}
-			 	client.close();
-			}); 
-			res.redirect('/');
-		}
-
-		else if(item.format == "mobi"){
-			console.log("mobi was chosen");
-			MongoClient.connect(url, function(err, client){
-
-				var db = client.db(dbName);
-		    	for(var i = 0; i < item.antal; i++){
-		    		var start = clock();
-				    db.collection('user').deleteOne({"_id": mobiBooks[i] }, function(error, result){
-						assert.equal(null, err);	
-						console.log("item deleted");
-					});
-					var duration = clock(start);
-					console.log("Took "+duration+"ms");
-					fs.appendFileSync('./results/results-delete.txt', duration+" ms mobi " + item.antal + "\r\n");
-			 	}
-			 	client.close();
-			}); 
-			res.redirect('/');
-		}
+				}
+				client.close();
+				res.redirect('/');
+			});
+		});
 	}
 	else{
 		console.log("something is broken!");
