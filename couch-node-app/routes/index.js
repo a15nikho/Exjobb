@@ -331,7 +331,7 @@ router.post('/dropdown', function(req, res, next){
 		//console.log(req);
 		console.log(req.params);
 		var resultArray = [];
-		var start = clock();
+		//var start = clock();
 		testdb.list({limit: item.antal, _id: htmlBooks[0]}, function(err, body) {
 			assert.equal(null, err);
 			for(var j = 0; j < item.antal; j++){
@@ -342,18 +342,18 @@ router.post('/dropdown', function(req, res, next){
 
 			console.log(resultArray);
 			for(var i = 0; i < item.antal; i++){
-				//var start = clock();
+				var start = clock();
 				testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
 				  //if (!err)
 				    //console.log(body);
 				});
-				//var duration = clock(start);
-				//console.log("Took "+duration+"ms");
+				var duration = clock(start);
+				console.log("Took "+duration+"ms");
 			}
 			res.redirect('/');
 		});
-		var duration = clock(start);
-		console.log("Took "+duration+"ms");
+		//var duration = clock(start);
+		//console.log("Took "+duration+"ms");
 		fs.appendFileSync('./results/results-delete.txt', duration+" ms delete " + item.antal + "\r\n");
 
 		console.log(item.antal + " delete was chosen");

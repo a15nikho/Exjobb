@@ -150,7 +150,7 @@ router.post('/dropdown', function(req, res, next){
 						  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
 						    // check the inserted document
 						    console.log("Inserting file");
-						    console.log(doc);
+						   // console.log(doc);
 							/*db.collection("user").findOne({ _id: name },function(err,data) {
 								console.log(data);
 								fs.writeFile(htmlBooks[i] ,data.comment.buffer,function(err) {
