@@ -1,3 +1,60 @@
+TEST 1
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
 1 ms delete 10
-1 ms delete 5
-0 ms delete 1
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+
+TEST 2
+
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+
+TEST 3
+0 ms delete 10
+1 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+
+TEST 4
+0 ms delete 10
+0 ms delete 10
+1 ms delete 10
+1 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+
+TEST 5
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10
+0 ms delete 10

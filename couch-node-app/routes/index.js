@@ -349,12 +349,14 @@ router.post('/dropdown', function(req, res, next){
 				});
 				var duration = clock(start);
 				console.log("Took "+duration+"ms");
+
+				fs.appendFileSync('./results/results-delete.txt', duration+" ms delete " + item.antal + "\r\n");
 			}
 			res.redirect('/');
 		});
 		//var duration = clock(start);
 		//console.log("Took "+duration+"ms");
-		fs.appendFileSync('./results/results-delete.txt', duration+" ms delete " + item.antal + "\r\n");
+		
 
 		console.log(item.antal + " delete was chosen");
 		

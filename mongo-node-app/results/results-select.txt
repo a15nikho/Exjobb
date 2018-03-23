@@ -1,2 +1,16 @@
-1006 ms select 1
-1005 ms select 1
+TEST 1
+1066 ms select 10
+
+TEST 2
+1062 ms select 10
+
+TEST 3
+
+1045 ms select 10
+
+TEST 4
+1052 ms select 10
+
+TEST 5
+
+1056 ms select 10

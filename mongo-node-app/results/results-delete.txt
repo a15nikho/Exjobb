@@ -1,10 +1,62 @@
-1 ms epub 5
-0 ms epub 5
-0 ms epub 5
-0 ms epub 5
-0 ms epub 5
-0 ms txt 1
-0 ms html 1
-0 ms mobi 1
-0 ms txt 1
-1 ms epub 1
+TEST 1
+1 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+0 ms txt 10
+1 ms txt 10
+
+TEST 2
+
+1 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+
+TEST 3
+
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+0 ms txt 10
+
+TEST 4
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+0 ms txt 10
+1 ms txt 10
+0 ms txt 10
+
+TEST 5
+
+1 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+0 ms txt 10
+1 ms txt 10
+1 ms txt 10
+0 ms txt 10
+0 ms txt 10

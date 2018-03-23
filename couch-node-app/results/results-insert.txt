@@ -1,10 +1,62 @@
-2 ms html 
-10 ms html 
-2 ms html 
-6 ms html 
-9 ms html 
-2 ms html 5
-10 ms html 5
-1 ms html 5
-6 ms html 5
-9 ms html 5
+TEST 1
+3 ms html 10
+28 ms html 10
+4 ms html 10
+21 ms html 10
+22 ms html 10
+47 ms html 10
+9 ms html 10
+11 ms html 10
+2 ms html 10
+11 ms html 10
+
+TEST 2
+
+3 ms html 10
+28 ms html 10
+3 ms html 10
+23 ms html 10
+25 ms html 10
+46 ms html 10
+11 ms html 10
+13 ms html 10
+2 ms html 10
+10 ms html 10
+
+TEST 3
+
+3 ms html 10
+28 ms html 10
+2 ms html 10
+18 ms html 10
+24 ms html 10
+45 ms html 10
+9 ms html 10
+12 ms html 10
+2 ms html 10
+10 ms html 10
+
+TEST 4
+3 ms html 10
+29 ms html 10
+3 ms html 10
+19 ms html 10
+25 ms html 10
+43 ms html 10
+11 ms html 10
+14 ms html 10
+2 ms html 10
+10 ms html 10
+
+TEST 5
+
+3 ms html 10
+28 ms html 10
+2 ms html 10
+18 ms html 10
+23 ms html 10
+45 ms html 10
+11 ms html 10
+12 ms html 10
+3 ms html 10
+9 ms html 10
