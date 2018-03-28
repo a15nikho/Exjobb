@@ -29,28 +29,24 @@ router.get('/', function(req, res, next){
 
 	fs.readdir(htmlFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file + " html");
 			htmlBooks.push(htmlFolder+file);
 		});
 	})
 
 	fs.readdir(txtFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			txtBooks.push(txtFolder+file);
 		});
 	})
 
 	fs.readdir(epubFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			epubBooks.push(epubFolder+file);
 		});
 	})
 
 	fs.readdir(mobiFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			mobiBooks.push(mobiFolder+file);
 		});
 	})
