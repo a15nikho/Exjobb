@@ -26,28 +26,24 @@ router.get('/', function(req, res, next) {
 	
 	fs.readdir(htmlFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file + " html");
 			htmlBooks.push(htmlFolder+file);
 		});
 	})
 
 	fs.readdir(txtFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			txtBooks.push(txtFolder+file);
 		});
 	})
 
 	fs.readdir(epubFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			epubBooks.push(epubFolder+file);
 		});
 	})
 
 	fs.readdir(mobiFolder, (err, files) => {
 		files.forEach(file => {
-			//console.log(file+ " txt");
 			mobiBooks.push(mobiFolder+file);
 		});
 	})
@@ -66,26 +62,21 @@ router.get('/get', function(req, res, next) {
 	var resultArray = [];
 	testdb.list(function(err, body) {
 		assert.equal(null, err);
-		//console.log(body);
-	
+
 		body.rows.forEach(function(doc) {
 			assert.equal(null, err);
 			resultArray.push(doc);
-			//console.log(doc);
 		});
 	
-		console.log(resultArray);
 		res.render('get', { title: 'CouchDB', items: resultArray });
 	});
 });
 
 router.post('/dropdown', function(req, res, next){
 	var item = {
-		
 		antal: req.body.antal,
 		operation: req.body.operation,
 		format: req.body.format
-		
 	};
 
 	if(item.operation == "insert"){
@@ -94,9 +85,6 @@ router.post('/dropdown', function(req, res, next){
 			console.log("txt was chosen");
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				console.log(txtBooks[i]);
-				//var doc = fs.readFileSync(txtBooks[i], "utf8");
-
 				var name = txtBooks[i];
 				var binData = fs.readFileSync(name, "utf8");
 				var object = {};
@@ -122,7 +110,6 @@ router.post('/dropdown', function(req, res, next){
 			console.log("html was chosen");
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				console.log(htmlBooks[i]);
 				var doc = fs.readFileSync(htmlBooks[i], "utf8");
 
 				var name = htmlBooks[i];
@@ -131,9 +118,6 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-			  	/*testdb.attachment.insert(htmlBooks[i], htmlBooks[i], object.data, 'text/html', function(err, body) {
-
-   		 	 	});*/
    		 	 	testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
 			        
 			    });
@@ -151,7 +135,6 @@ router.post('/dropdown', function(req, res, next){
 			console.log("epub was chosen");
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				console.log(epubBooks[i]);
 				var doc = fs.readFileSync(epubBooks[i], "utf8");
 
 				var name = epubBooks[i];
@@ -160,10 +143,6 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-			  	/*testdb.attachment.insert(epubBooks[i], epubBooks[i], object.data, 'application/epub+zip', function(err, body) {
-
-   		 	 	});*/
-   		 	 	//console.log(epubBooks[i]);
    		 	 	testdb.multipart.insert(epubBooks[i], [{ data: doc, content_type: 'application/epub+zip'}], epubBooks[i], function(err, body) {
 			        
 			    });
@@ -179,7 +158,6 @@ router.post('/dropdown', function(req, res, next){
 			console.log("mobi was chosen");
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				console.log(mobiBooks[i]);
 				var doc = fs.readFileSync(mobiBooks[i], "utf8");
 
 				var name = mobiBooks[i];
@@ -187,10 +165,6 @@ router.post('/dropdown', function(req, res, next){
 				var object = {};
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
-
-			  	/*testdb.attachment.insert(mobiBooks[i], mobiBooks[i], object.data, 'application/x-mobipocket-ebook ', function(err, body) {
-
-   		 	 	});*/
 
    		 	 	testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
 			        
@@ -209,8 +183,6 @@ router.post('/dropdown', function(req, res, next){
 		console.log(item.antal + " update was chosen");
 		var id = req.body.id;
 		var rev = req.body.rev;
-		console.log(rev);
-	 	//var start = clock();
 	 	var resultArray = [];
 	 	testdb.list(function(err, body) {
 			assert.equal(null, err);
@@ -220,9 +192,6 @@ router.post('/dropdown', function(req, res, next){
 			
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
-				/*testdb.insert({ _id: resultArray[i].id, _rev: resultArray[i].value.rev, name: item.antal, _attachment: resultArray[i]  }, function(err, body) {
-
-				});*/
 				if(item.format == "txt"){
 					var doc = fs.readFileSync(txtBooks[i], "utf8");
 
@@ -249,8 +218,7 @@ router.post('/dropdown', function(req, res, next){
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
-				        if (!err)
-				          console.log(body);
+
 				    });
 
 				}
@@ -265,8 +233,7 @@ router.post('/dropdown', function(req, res, next){
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], epubBooks[i], function(err, body) {
-				        if (!err)
-				          console.log(body);
+
 				    });
 
 				}
@@ -281,8 +248,7 @@ router.post('/dropdown', function(req, res, next){
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], mobiBooks[i], function(err, body) {
-				        if (!err)
-				          console.log(body);
+
 				    });
 
 				}
@@ -294,24 +260,13 @@ router.post('/dropdown', function(req, res, next){
 			}
 			res.redirect('/');
 		});
-
-
-
-		
-		//var duration = clock(start);
-		//console.log("Took "+duration+"ms");
-		
-		//res.redirect('/');
 	}
 	else if(item.operation == "select"){
-		console.log("select was chosen");
-		console.log(htmlBooks);
 		var resultArray = [];
 		var start = clock();
 		testdb.list({limit: item.antal}, function(err, body) {
 			assert.equal(null, err);
 			body.rows.forEach(function(doc) {
-			  //console.log(doc);
 			  resultArray.push(doc);
 			});
 			
@@ -328,10 +283,7 @@ router.post('/dropdown', function(req, res, next){
 	else if(item.operation == "delete"){
 		var id = req.body.id;
 		var rev = req.body.rev;
-		//console.log(req);
-		console.log(req.params);
 		var resultArray = [];
-		//var start = clock();
 		testdb.list({limit: item.antal, _id: htmlBooks[0]}, function(err, body) {
 			assert.equal(null, err);
 			for(var j = 0; j < item.antal; j++){
@@ -340,12 +292,10 @@ router.post('/dropdown', function(req, res, next){
 				});
 			} 
 
-			console.log(resultArray);
 			for(var i = 0; i < item.antal; i++){
 				var start = clock();
 				testdb.destroy(resultArray[i].id, resultArray[i].value.rev, function(err, body) {
-				  //if (!err)
-				    //console.log(body);
+
 				});
 				var duration = clock(start);
 				console.log("Took "+duration+"ms");
@@ -354,11 +304,6 @@ router.post('/dropdown', function(req, res, next){
 			}
 			res.redirect('/');
 		});
-		//var duration = clock(start);
-		//console.log("Took "+duration+"ms");
-		
-
-		console.log(item.antal + " delete was chosen");
 		
 	}
 	else{

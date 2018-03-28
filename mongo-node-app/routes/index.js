@@ -110,19 +110,10 @@ router.post('/dropdown', function(req, res, next){
 					var binData = fs.readFileSync(name);
 					var object = {};
 						object.name = name;
-						//object.data = new Binary(binData);
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
-					    // check the inserted document
-					    //console.log("Inserting file");
-					    //console.log(doc);
-						/*db.collection("user").findOne({ _id: name },function(err,data) {
-							
-							fs.writeFile(txtBooks[i] ,data.comment.buffer,function(err) {
-								console.log("done");
-							});
-						});*/
+				  	db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
+
 					});
 					var duration = clock(start);
 					console.log("Took "+duration+"ms");
@@ -147,16 +138,8 @@ router.post('/dropdown', function(req, res, next){
 							object.name = name;
 							object.data = new Buffer(binData, 'binary').toString('base64');
 
-						  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
-						    // check the inserted document
-						    console.log("Inserting file");
-						   // console.log(doc);
-							/*db.collection("user").findOne({ _id: name },function(err,data) {
-								console.log(data);
-								fs.writeFile(htmlBooks[i] ,data.comment.buffer,function(err) {
-									console.log("done");
-								});
-							});*/
+						db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
+	
 						});
 					  	var duration = clock(start);
 						console.log("Took "+duration+"ms");
@@ -173,7 +156,6 @@ router.post('/dropdown', function(req, res, next){
 			MongoClient.connect(url, function(err, client) {
 				for(var i = 0; i < item.antal; i++){
 					var start = clock();
-					// set an ID for the document for easy retrieval
 
 					var db = client.db(dbName);
 					var name = epubBooks[i];
@@ -182,16 +164,8 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					  db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
-					    // check the inserted document
-					    console.log("Inserting file");
-					    console.log(doc);
-						/*db.collection("user").findOne({ _id: name },function(err,data) {
-							
-							fs.writeFile(epubBooks[i] ,data.comment.buffer,function(err) {
-								console.log("done");
-							});
-						});*/
+					db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
+
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
@@ -217,15 +191,7 @@ router.post('/dropdown', function(req, res, next){
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					db.collection('user').insert({"_id": object.name, "comment": object}, function(err, doc){
-					    // check the inserted document
-					    console.log("Inserting file");
-					    console.log(doc);
-						/*db.collection("user").findOne({ _id: name },function(err,data) {
-							//console.log(data);
-							fs.writeFile(mobiBooks[i] ,data.comment.buffer,function(err) {
-								console.log("done");
-							});
-						});*/
+	
 					});
 				  	var duration = clock(start);
 					console.log("Took "+duration+"ms");
