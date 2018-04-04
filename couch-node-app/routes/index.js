@@ -269,6 +269,13 @@ router.post('/dropdown', function(req, res, next){
 			body.rows.forEach(function(doc) {
 			  resultArray.push(doc);
 			});
+			for(var j = 0; j < item.antal; j++){
+				console.log(resultArray[j].id);
+				testdb.multipart.get(resultArray[j].id, function(err, buffer) {
+
+				});
+
+			}
 			
 			res.render('index', { title: 'CouchDB', items: resultArray });
 			var duration = clock(start);
