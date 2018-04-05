@@ -283,9 +283,6 @@ router.post('/dropdown', function(req, res, next){
 
 			fs.appendFileSync('./results/results-select.txt', duration+" ms select " + item.antal + " \r\n");
 		});
-		
-
-		
 	}
 	else if(item.operation == "delete"){
 		var id = req.body.id;
