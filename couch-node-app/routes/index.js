@@ -91,7 +91,7 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-   		 	 	testdb.multipart.insert(txtBooks[i], [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
+   		 	 	testdb.multipart.insert(txtBooks[i], [{ name : txtBooks[i], data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
 			       
 			    });
 
@@ -118,7 +118,7 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-   		 	 	testdb.multipart.insert(htmlBooks[i], [{ data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
+   		 	 	testdb.multipart.insert(htmlBooks[i], [{ name : htmlBooks[i], data: doc, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
 			        
 			    });
 
@@ -143,7 +143,7 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-   		 	 	testdb.multipart.insert(epubBooks[i], [{ data: doc, content_type: 'application/epub+zip'}], epubBooks[i], function(err, body) {
+   		 	 	testdb.multipart.insert(epubBooks[i], [{ name : epubBooks[i], data: doc, content_type: 'application/epub+zip'}], epubBooks[i], function(err, body) {
 			        
 			    });
    		 	 	var duration = clock(start);
@@ -166,7 +166,7 @@ router.post('/dropdown', function(req, res, next){
 					object.name = name;
 					object.data = new Buffer(binData, 'binary').toString('base64');
 
-   		 	 	testdb.multipart.insert(mobiBooks[i], [{ data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
+   		 	 	testdb.multipart.insert(mobiBooks[i], [{ name : mobiBooks[i], data: doc, content_type: 'application/x-mobipocket-ebook'}], mobiBooks[i], function(err, body) {
 			        
 			    });
    		 	 	var duration = clock(start);
@@ -201,9 +201,9 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
-
-				    });
+				    testdb.attachment.insert(txtBooks[i], txtBooks[i]+"_2", object.data, 'text/plain', { rev: resultArray[i].value.rev}, function(err, body) { 
+ 
+            		});
 
 				}
 
@@ -216,9 +216,9 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], htmlBooks[i], function(err, body) {
-
-				    });
+					 testdb.attachment.insert(htmlBooks[i], htmlBooks[i]+"_2", object.data, 'text/plain', { rev: resultArray[i].value.rev}, function(err, body) { 
+ 
+            		});
 
 				}
 
@@ -231,9 +231,9 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], epubBooks[i], function(err, body) {
-
-				    });
+					 testdb.attachment.insert(epubBooks[i], epubBooks[i]+"_2", object.data, 'text/plain', { rev: resultArray[i].value.rev}, function(err, body) { 
+ 
+            		});
 
 				}
 
@@ -246,9 +246,9 @@ router.post('/dropdown', function(req, res, next){
 						object.name = name;
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
-					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/html'}], mobiBooks[i], function(err, body) {
-
-				    });
+					 testdb.attachment.insert(mobiBooks[i], mobiBooks[i]+"_2", object.data, 'text/plain', { rev: resultArray[i].value.rev}, function(err, body) { 
+ 
+            		});
 
 				}
 
