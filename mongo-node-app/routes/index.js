@@ -212,7 +212,15 @@ router.post('/dropdown', function(req, res, next){
 				var db = client.db(dbName);
 				for(var i = 0; i < item.antal; i++){
 					var start = clock();
-			    	db.collection('user').updateOne({"_id": txtBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+
+					var db = client.db(dbName);
+					var name = txtBooks[i];
+					var binData = fs.readFileSync(name);
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+			    	db.collection('user').updateOne({"_id": txtBooks[i]}, {$set: {"name": object} }, function(error, result){
 						assert.equal(null, err);
 						console.log('Item updated');
 					});
@@ -232,7 +240,14 @@ router.post('/dropdown', function(req, res, next){
 				var db = client.db(dbName);
 		    	for(var i = 0; i < item.antal; i++){
 		    		var start = clock();
-			    	db.collection('user').updateOne({"_id": htmlBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+			    	var db = client.db(dbName);
+					var name = htmlBooks[i];
+					var binData = fs.readFileSync(name);
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+			    	db.collection('user').updateOne({"_id": htmlBooks[i]}, {$set: {"name": object} }, function(error, result){
 						assert.equal(null, err);
 						console.log('Item updated');
 					});
@@ -252,7 +267,14 @@ router.post('/dropdown', function(req, res, next){
 				var db = client.db(dbName);
 		    	for(var i = 0; i < item.antal; i++){
 		    		var start = clock();
-			    	db.collection('user').updateOne({"_id": epubBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+		    		var db = client.db(dbName);
+					var name = epubBooks[i];
+					var binData = fs.readFileSync(name);
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+			    	db.collection('user').updateOne({"_id": epubBooks[i]}, {$set: {"name": object} }, function(error, result){
 						assert.equal(null, err);
 						console.log('Item updated');
 					});
@@ -272,7 +294,14 @@ router.post('/dropdown', function(req, res, next){
 				var db = client.db(dbName);
 		    	for(var i = 0; i < item.antal; i++){
 		    		var start = clock();
-			    	db.collection('user').updateOne({"_id": mobiBooks[i]}, {$set: {"name": "changed"} }, function(error, result){
+			    	var db = client.db(dbName);
+					var name = mobiBooks[i];
+					var binData = fs.readFileSync(name);
+					var object = {};
+						object.name = name;
+						object.data = new Buffer(binData, 'binary').toString('base64');
+
+			    	db.collection('user').updateOne({"_id": mobiBooks[i]}, {$set: {"name": object} }, function(error, result){
 						assert.equal(null, err);
 						console.log('Item updated');
 					});

@@ -202,8 +202,7 @@ router.post('/dropdown', function(req, res, next){
 						object.data = new Buffer(binData, 'binary').toString('base64');
 
 					testdb.multipart.insert({_id: resultArray[i].id, _rev : resultArray[i].value.rev , name: "changed"}, [{ data: object.data, content_type: 'text/plain'}], txtBooks[i], function(err, body) {
-				        if (!err)
-				          console.log(body);
+
 				    });
 
 				}
@@ -288,7 +287,7 @@ router.post('/dropdown', function(req, res, next){
 		var id = req.body.id;
 		var rev = req.body.rev;
 		var resultArray = [];
-		testdb.list({limit: item.antal, _id: htmlBooks[0]}, function(err, body) {
+		testdb.list({limit: item.antal}, function(err, body) {
 			assert.equal(null, err);
 			for(var j = 0; j < item.antal; j++){
 				body.rows.forEach(function(doc) {
